@@ -8,13 +8,26 @@ export type RateLimitResult = { ok: true } | { ok: false; retryAfterSeconds: num
  * blunt casual abuse of the contact form. For stronger guarantees, swap this for
  * a shared store (for example Upstash Redis) behind the same interface.
  */
-export function createRateLimiter({ limit, windowMs }: { limit: number; windowMs: number }) {
+export function createRateLimiter({
+  limit,
+  windowMs,
+  maxKeys = 5000,
+}: {
+  limit: number;
+  windowMs: number;
+  /** Hard cap on tracked keys, so many distinct keys cannot exhaust memory. */
+  maxKeys?: number;
+}) {
   const hits = new Map<string, { count: number; resetAt: number }>();
 
   return function check(key: string, now: number = Date.now()): RateLimitResult {
-    // Opportunistic cleanup keeps the map from growing without bound.
-    if (hits.size > 5000) {
+    if (!hits.has(key) && hits.size >= maxKeys) {
+      // Drop expired entries first, then the oldest ones (Map keeps insertion order).
       for (const [k, v] of hits) if (v.resetAt <= now) hits.delete(k);
+      for (const k of hits.keys()) {
+        if (hits.size < maxKeys) break;
+        hits.delete(k);
+      }
     }
 
     const entry = hits.get(key);

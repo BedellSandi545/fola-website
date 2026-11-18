@@ -22,4 +22,13 @@ describe("createRateLimiter", () => {
     expect(check("b", 0).ok).toBe(true);
     expect(check("a", 10).ok).toBe(false);
   });
+
+  it("caps tracked keys, evicting the oldest", () => {
+    const check = createRateLimiter({ limit: 1, windowMs: 60_000, maxKeys: 2 });
+    expect(check("a", 0).ok).toBe(true);
+    expect(check("b", 0).ok).toBe(true);
+    expect(check("c", 0).ok).toBe(true); // evicts "a"
+    expect(check("a", 0).ok).toBe(true);
+    expect(check("c", 0).ok).toBe(false);
+  });
 });

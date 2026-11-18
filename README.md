@@ -41,7 +41,7 @@ See `.env.example`.
 
 ### Contact form behaviour
 - Validation runs in the browser (for usability) and again on the server (for trust), using the same zod schema (`src/lib/validation/contact.ts`).
-- The server also applies a honeypot field, a minimum fill time and a per-IP rate limit (5 per 10 minutes). The limit is held in memory, so it is per instance; see `src/lib/rate-limit.ts` to swap in a shared store.
+- The server also applies a honeypot field, a minimum fill time and a per-IP rate limit (5 per 10 minutes) plus a global ceiling (60 per 10 minutes). The IP comes from `x-real-ip` or the right-most `X-Forwarded-For` entry (the left-most is client-controlled). The fill-time check is client-supplied, so add Cloudflare Turnstile or similar if spam gets through. The limit is held in memory, so it is per instance; see `src/lib/rate-limit.ts` to swap in a shared store.
 - **If the email variables are missing**, the API returns `503 not_configured`. The form then says the message was not sent and offers a pre-filled `mailto:` link. It never shows "Message sent" unless the provider accepted the email.
 
 ### Connecting Resend
