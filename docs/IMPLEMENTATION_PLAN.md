@@ -76,7 +76,7 @@ HERO (desktop)
 MOBILE: photo first (4:5) with line, then type.
 ```
 
-Home order: hero → positioning and four pillars (typographic list, not cards) → field work (asymmetric captioned photographs) → brands list → services index → six-step approach (numbered, because it is a real sequence) → team → contact call to action → footer.
+Home order (updated 2026-11-18 to follow the nav): hero → scroll-linked marquee → 01 About us (pillars) → 02 Services → 03 Work (navy band) → 04 Process → 05 Team → 06 Contact → footer with the FCA signature. The brands list was removed at the client's request.
 
 ### Motion system (`src/lib/motion.ts`)
 - Durations: 0.2s for UI feedback, 0.6s for reveals, 1.2s for the hero line draw. Ease: `power3.out` on entry, `power2.in` on exit.
@@ -105,3 +105,18 @@ Home order: hero → positioning and four pillars (typographic list, not cards) 
 - Lint, `tsc --noEmit`, `next build`.
 - Playwright script (`scripts/screenshot.mjs`): screenshots of every route at 390, 768, 1280 and 1440 in light and dark, plus checks for horizontal overflow and console errors.
 - Manual keyboard and reduced-motion pass.
+
+
+## Hero video (2026-11-18)
+
+Client supplied `public/video/hero.MP4` (1080×1920, 97 s, HEVC Main 10 + AAC, 70 MB). HEVC 10-bit does not play in Firefox or in many Chrome/Edge installs, so web encodes were made with ffmpeg (source untouched):
+
+| File | Encode | Use |
+| --- | --- | --- |
+| `hero-720.mp4` | H.264 High, 720×1280, CRF 25 (max 2.6 Mb/s), AAC 112k, faststart | Default source |
+| `hero-540.mp4` | H.264 High, 540×960, CRF 27 (max 1.5 Mb/s), AAC 96k, faststart | `media="(max-width: 767px)"` |
+| `hero-poster.jpg` | Frame at 0.4 s, 720 wide | Poster and ambient fallback |
+
+Re-encode command (ffmpeg): `-vf "scale=720:-2,format=yuv420p" -c:v libx264 -profile:v high -preset slow -crf 25 -maxrate 2600k -bufsize 5200k -r 24 -g 48 -movflags +faststart -c:a aac -b:a 112k`.
+
+The 70 MB source sits in `public/`, so it is deployed even though nothing links to it. Move it out of `public/` (for example to `assets-source/`) before launch. NEEDS CLIENT CONFIRMATION: who is speaking in the film, and whether a written transcript should be published alongside it.

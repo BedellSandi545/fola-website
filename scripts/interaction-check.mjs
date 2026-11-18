@@ -61,7 +61,7 @@ function track(page) {
   const dialog = page.getByRole("dialog", { name: "Menu" });
   check("menu: opens as dialog", await dialog.isVisible());
   check("menu: aria-expanded true", (await page.getByRole("button", { name: "Close menu" }).getAttribute("aria-expanded")) === "true");
-  check("menu: focus moves into menu", (await page.evaluate(() => document.activeElement?.textContent?.trim())) === "Home");
+  check("menu: focus moves into menu", (await page.evaluate(() => document.activeElement?.textContent?.trim()))?.endsWith("Home"));
   check("menu: body scroll locked", (await page.evaluate(() => document.body.style.overflow)) === "hidden");
 
   // Tab past the last item should wrap to the menu button.
@@ -108,6 +108,50 @@ function track(page) {
   check("form: no false success", !(await page.getByText("Message sent").isVisible()));
   const mailto = await page.getByRole("link", { name: "Email your message" }).getAttribute("href");
   check("form: mailto fallback carries the message", Boolean(mailto?.startsWith("mailto:") && mailto.includes("product%20launch")));
+  await context.close();
+}
+
+// 3b. Contact form: reply by WhatsApp instead of email; social links are real links.
+{
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  track(page);
+  await page.goto(`${BASE_URL}/contact`, { waitUntil: "load" });
+  await page.getByText("We'll message you on WhatsApp").click();
+  check("form: choosing WhatsApp swaps the email field", (await page.getByLabel("Email address *").count()) === 0);
+  await page.getByLabel("Your name *").fill("Test Visitor");
+  await page.getByLabel("WhatsApp number *").fill("12");
+  await page.getByLabel("Tell us about your project *").fill("We are planning a product launch and need a campaign.");
+  await page.getByRole("button", { name: "Send message" }).click();
+  check("form: invalid WhatsApp number rejected", await page.getByRole("alert").filter({ hasText: "country code" }).isVisible());
+  await page.getByLabel("WhatsApp number *").fill("+231 880 007 811");
+  await page.waitForTimeout(2800);
+  await page.getByRole("button", { name: "Send message" }).click();
+  const wa = page.getByRole("link", { name: /Send on WhatsApp/ });
+  await wa.waitFor({ timeout: 15000 }).catch(() => {});
+  const waHref = await wa.getAttribute("href").catch(() => null);
+  check("form: WhatsApp fallback opens a chat with FCA", Boolean(waHref?.startsWith("https://wa.me/231880007811?text=")));
+
+  const socials = await page.locator("aside a[target=_blank]").evaluateAll((els) => els.map((a) => a.getAttribute("href")));
+  check(
+    "social: WhatsApp, TikTok, Instagram and Facebook are links",
+    ["wa.me/231880007811", "tiktok.com/@folacreativeagency", "instagram.com", "facebook.com"].every((u) => socials.some((h) => h?.includes(u))),
+    socials.join(" "),
+  );
+  await context.close();
+}
+
+// 3c. Home: client brand names are no longer listed; signature in header and footer.
+{
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(`${BASE_URL}/`, { waitUntil: "load" });
+  const text = await page.locator("body").innerText();
+  check("home: no brand names section", !/Sinkor|Afridodge|TM Mall|Brands we/i.test(text));
+  check("signature: in header", (await page.locator("header img[src*=signature]").count()) > 0);
+  check("signature: in footer", (await page.locator("footer img[src*=signature]").count()) > 0);
+  const nav = await page.locator('header nav[aria-label="Primary"]').first().locator("a").allInnerTexts();
+  check("nav: Home, About Us, Services, Work, Contact", nav.join(",") === "Home,About Us,Services,Work,Contact", nav.join(","));
   await context.close();
 }
 

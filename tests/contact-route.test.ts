@@ -88,6 +88,20 @@ describe("POST /api/contact", () => {
     expect(payload.text).toContain("We would like help planning a product launch event.");
   });
 
+  it("sends WhatsApp enquiries without a reply-to address and includes the number", async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchSpy);
+    vi.stubEnv("RESEND_API_KEY", "test-key");
+    vi.stubEnv("CONTACT_TO_EMAIL", "inbox@example.com");
+
+    const res = await POST(request({ ...enquiry, email: "", contactMethod: "whatsapp", whatsapp: "+231 880 007 811" }));
+    expect(res.status).toBe(200);
+    const payload = JSON.parse((fetchSpy.mock.calls[0] as [string, RequestInit])[1].body as string);
+    expect(payload.reply_to).toBeUndefined();
+    expect(payload.subject).toContain("reply on WhatsApp");
+    expect(payload.text).toContain("Reply on WhatsApp: +231880007811 (https://wa.me/231880007811)");
+  });
+
   it("returns 502 when the provider rejects the message", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 500 })));

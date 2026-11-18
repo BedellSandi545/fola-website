@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildMailtoHref, validateContact } from "@/lib/validation/contact";
+import { buildMailtoHref, buildWhatsAppText, validateContact } from "@/lib/validation/contact";
 
 const valid = {
   name: "Ama Kollie",
@@ -73,5 +73,67 @@ describe("buildMailtoHref", () => {
     expect(body).toContain("Line one\nLine two");
     expect(body).toContain("Interested in: Branding");
     expect(body).not.toContain("Business:");
+  });
+});
+
+describe("validateContact: reply method", () => {
+  const base = { name: "Ama Kollie", message: "We are opening a new restaurant and need a launch campaign." };
+
+  it("defaults to email and requires an email address", () => {
+    const result = validateContact(base);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.errors.email).toBe("Enter your email address.");
+      expect(result.errors.whatsapp).toBeUndefined();
+    }
+  });
+
+  it("accepts WhatsApp without an email and normalises the number", () => {
+    const result = validateContact({ ...base, contactMethod: "whatsapp", whatsapp: " +231 (880) 007-811 " });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.contactMethod).toBe("whatsapp");
+      expect(result.data.whatsapp).toBe("+231880007811");
+      expect(result.data.email).toBe("");
+    }
+  });
+
+  it("requires a WhatsApp number when WhatsApp is chosen", () => {
+    const result = validateContact({ ...base, contactMethod: "whatsapp", email: "ama@example.com" });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.errors.whatsapp).toBe("Enter your WhatsApp number.");
+      expect(result.errors.email).toBeUndefined();
+    }
+  });
+
+  it("rejects numbers that are too short or contain letters", () => {
+    for (const whatsapp of ["12345", "+231 88O 007 811"]) {
+      const result = validateContact({ ...base, contactMethod: "whatsapp", whatsapp });
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.errors.whatsapp).toMatch(/country code/);
+    }
+  });
+
+  it("drops the WhatsApp number when email is chosen", () => {
+    const result = validateContact({ ...base, contactMethod: "email", email: "ama@example.com", whatsapp: "+231880007811" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.whatsapp).toBe("");
+  });
+
+  it("rejects unknown reply methods", () => {
+    const result = validateContact({ ...base, contactMethod: "fax", email: "ama@example.com" });
+    expect(result.success).toBe(false);
+    if (!result.success) expect(result.errors.contactMethod).toBe("Choose how you'd like us to reply.");
+  });
+});
+
+describe("buildWhatsAppText", () => {
+  it("writes the enquiry as a WhatsApp message", () => {
+    const text = buildWhatsAppText({ name: "Ama", message: "We need a logo.", service: "Branding" });
+    expect(text.startsWith("Hello FCA, this is Ama.")).toBe(true);
+    expect(text).toContain("We need a logo.");
+    expect(text).toContain("Interested in: Branding");
+    expect(text).not.toContain("Name:");
   });
 });

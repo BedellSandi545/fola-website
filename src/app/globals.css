@@ -167,6 +167,11 @@
   .measure {
     max-width: 68ch;
   }
+
+  /* Section heading scale shared by every chapter of a page. */
+  .type-section {
+    font-size: clamp(2.25rem, 4.6vw, 4rem);
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -187,6 +192,214 @@
   to {
     opacity: 1;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Reveal system (see src/components/motion/reveal-observer.tsx).
+   Elements marked [data-animate] are hidden only while <html> has
+   .reveal-ready (added by JS after on-screen elements are marked .is-in) and
+   motion is allowed. They transition to rest when .is-in is added.
+   Durations/easing follow src/lib/motion.ts: reveal 0.9s, draw 1.8s, expo-out.
+   An optional --d (e.g. "120ms") delays an element; --wi indexes words.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  [data-animate] {
+    --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+      opacity 0.9s var(--reveal-ease) var(--d, 0ms),
+      transform 1s var(--reveal-ease) var(--d, 0ms),
+      clip-path 1.2s var(--reveal-ease) var(--d, 0ms);
+  }
+
+  /* rise (default): fade up. */
+  .reveal-ready [data-animate="rise"]:not(.is-in),
+  .reveal-ready [data-animate=""]:not(.is-in) {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+
+  .reveal-ready [data-animate="fade"]:not(.is-in) {
+    opacity: 0;
+  }
+
+  /* mask: a photograph opens from the bottom edge while it settles from a slight zoom. */
+  [data-animate="mask"] img {
+    transition: transform 1.6s var(--reveal-ease) var(--d, 0ms);
+  }
+  .reveal-ready [data-animate="mask"]:not(.is-in) {
+    clip-path: inset(100% 0 0 0);
+  }
+  .reveal-ready [data-animate="mask"]:not(.is-in) img {
+    transform: scale(1.18);
+  }
+
+  /* draw: the signature ribbon is drawn left to right. */
+  [data-animate="draw"] {
+    transition: clip-path 2s cubic-bezier(0.65, 0, 0.35, 1) var(--d, 0ms);
+  }
+  .reveal-ready [data-animate="draw"]:not(.is-in) {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  /* line: a rule grows from the left. */
+  [data-animate="line"] {
+    transform-origin: left center;
+  }
+  .reveal-ready [data-animate="line"]:not(.is-in) {
+    transform: scaleX(0);
+  }
+
+  /* stagger: direct children rise one after another. */
+  [data-animate="stagger"] > * {
+    transition:
+      opacity 0.8s var(--reveal-ease),
+      transform 0.9s var(--reveal-ease);
+  }
+  .reveal-ready [data-animate="stagger"]:not(.is-in) > * {
+    opacity: 0;
+    transform: translateY(1.75rem);
+  }
+  [data-animate="stagger"] > :nth-child(2) { transition-delay: 70ms; }
+  [data-animate="stagger"] > :nth-child(3) { transition-delay: 140ms; }
+  [data-animate="stagger"] > :nth-child(4) { transition-delay: 210ms; }
+  [data-animate="stagger"] > :nth-child(5) { transition-delay: 280ms; }
+  [data-animate="stagger"] > :nth-child(6) { transition-delay: 350ms; }
+  [data-animate="stagger"] > :nth-child(7) { transition-delay: 420ms; }
+  [data-animate="stagger"] > :nth-child(n + 8) { transition-delay: 490ms; }
+
+  /* words: each word rises out of its own mask. */
+  [data-animate="words"] {
+    transition: none;
+  }
+  [data-animate="words"] .word > span {
+    transition: transform 1s var(--reveal-ease) calc(var(--d, 0ms) + var(--wi, 0) * 55ms);
+  }
+  .reveal-ready [data-animate="words"]:not(.is-in) .word > span {
+    transform: translateY(105%);
+  }
+}
+
+/* Word masks stay in place even without motion so line breaks never change. */
+.word {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.12em;
+  vertical-align: top;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+.word > span {
+  display: inline-block;
+}
+
+/* Signature in the header: drawn once on first paint. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-signature="load"] {
+    animation: signature-draw 1.8s cubic-bezier(0.65, 0, 0.35, 1) 0.35s both;
+  }
+}
+
+@keyframes signature-draw {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Reading progress: a gold hairline under the header, driven by the page's scroll. */
+.scroll-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress {
+      display: block;
+      position: absolute;
+      inset-inline: 0;
+      bottom: -1px;
+      height: 2px;
+      background: var(--accent);
+      transform-origin: left center;
+      transform: scaleX(0);
+      animation: scroll-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes scroll-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Mobile menu: items arrive one after another each time the panel opens. */
+@media (prefers-reduced-motion: no-preference) {
+  .menu-panel:not([hidden]) .menu-item {
+    animation: menu-item-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 55ms + 40ms);
+  }
+  .menu-panel:not([hidden]) {
+    animation: menu-panel-in 0.35s ease-out both;
+  }
+}
+
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+}
+
+@keyframes menu-panel-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Hero scroll cue: a short, slow nudge, five times, then it rests (no endless motion). */
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-cue {
+    animation: scroll-cue 1.8s cubic-bezier(0.65, 0, 0.35, 1) 2s 5;
+  }
+}
+
+@keyframes scroll-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(0.6rem);
+    opacity: 0.35;
+  }
+}
+
+/* Contact form: the reply field fades in when switching between email and WhatsApp. */
+@media (prefers-reduced-motion: no-preference) {
+  .form-swap {
+    animation: form-swap 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes form-swap {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+/* Approach: a step lights up once the reader reaches it. */
+[data-step] [data-step-number] {
+  transition:
+    color 0.5s ease,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-step].is-in [data-step-number] {
+  color: var(--accent-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {

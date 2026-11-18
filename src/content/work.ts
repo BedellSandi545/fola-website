@@ -8,8 +8,8 @@ export type FieldNote = { id: string; title: string; body: string; photo: Photo;
 
 export const fieldNotes: readonly FieldNote[] = [
   {
-    id: "tm-mall",
-    title: "On the ground with TM Mall",
+    id: "videography",
+    title: "On the ground with the video team",
     body: "Working alongside the videography team to bring a brand's story to life.",
     photo: photos.tmMall,
     discipline: "Content production",

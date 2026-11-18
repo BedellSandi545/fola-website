@@ -1,14 +1,14 @@
-import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button-link";
 import { HeroMotion } from "@/components/motion/hero-motion";
-import { photos } from "@/content/images";
+import { HeroVideo } from "@/components/sections/home/hero-video";
 
 /**
- * Signature composition: poster headline beside the beach event photograph.
- * From lg up the hero fills the first screen and the photograph bleeds to the
- * right edge of the viewport at full hero height, with its caption set on a scrim.
- * Below lg the photograph follows the copy as a framed 4:5 crop.
+ * Signature composition: poster headline beside FCA's first-year film.
+ * From lg up the hero fills the first screen and the film column bleeds to the
+ * right edge of the viewport at full height; the 9:16 film sits whole in a frame
+ * on an ambient backdrop drawn from the film itself. Below lg the film follows
+ * the copy, full-bleed.
  */
 export function Hero() {
   return (
@@ -41,38 +41,28 @@ export function Hero() {
               See our work
             </ButtonLink>
           </div>
+          <a
+            href="#about"
+            data-hero-fade
+            data-reveal
+            className="group mt-12 hidden min-h-11 items-center gap-3 text-sm font-semibold text-fg-muted transition-colors duration-200 hover:text-fg lg:inline-flex"
+          >
+            <span className="relative flex h-10 w-6 justify-center rounded-full border border-current">
+              <ArrowDown aria-hidden="true" className="scroll-cue mt-2 size-3.5" />
+            </span>
+            Scroll to explore
+          </a>
         </div>
 
-        {/* On lg the figure leaves the grid and fills the right of the section, edge to edge. */}
-        <figure className="relative lg:absolute lg:inset-y-0 lg:right-0 lg:w-[42%] xl:w-[45%]">
-          <div
-            data-hero-media
-            data-reveal
-            className="relative aspect-[4/5] overflow-hidden bg-surface-sunken sm:aspect-[4/3] lg:aspect-auto lg:h-full"
-          >
-            <Image
-              src={photos.beachEvent.src}
-              alt={photos.beachEvent.alt}
-              fill
-              preload
-              quality={70}
-              placeholder="blur"
-              sizes="(min-width: 1280px) 45vw, (min-width: 1024px) 42vw, 100vw"
-              className="object-cover object-[60%_45%]"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/70 via-black/30 to-transparent"
-            />
-            <figcaption
-              data-hero-fade
-              data-reveal
-              className="absolute inset-x-0 bottom-0 max-w-md p-5 text-sm leading-snug text-white sm:p-6 lg:p-8"
-            >
-              Event planning and coordination: behind the scenes of a summer beach event.
-            </figcaption>
-          </div>
-        </figure>
+        {/* On lg the film column leaves the grid and fills the right of the section, edge to edge.
+            Below lg it runs full-bleed under the copy. */}
+        <div
+          data-hero-media
+          data-reveal
+          className="-mx-[var(--gutter)] lg:absolute lg:inset-y-0 lg:right-0 lg:mx-0 lg:w-[42%] xl:w-[45%]"
+        >
+          <HeroVideo className="h-full" />
+        </div>
       </HeroMotion>
     </section>
   );

@@ -18,13 +18,25 @@ export function HeroMotion({ children, className }: { children: ReactNode; class
     () => {
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK_QUERY, () => {
-        gsap
-          .timeline({ defaults: { ease: ease.enter } })
-          .fromTo(
+        const tl = gsap.timeline({ defaults: { ease: ease.enter } });
+        // Inner-page intros reuse this entrance without a photograph.
+        if (scope.current?.querySelector("[data-hero-media]")) {
+          tl.fromTo(
             "[data-hero-media]",
             { autoAlpha: 0, clipPath: "inset(12% 0% 12% 0%)" },
             { autoAlpha: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 1.1 },
-          )
+          );
+        }
+        // The hero film's frame rises into place as its column opens.
+        if (scope.current?.querySelector("[data-hero-card]")) {
+          tl.fromTo(
+            "[data-hero-card]",
+            { autoAlpha: 0, y: 70, scale: 0.92, rotate: -1.5 },
+            { autoAlpha: 1, y: 0, scale: 1, rotate: 0, duration: 1.3, ease: "expo.out" },
+            0.35,
+          );
+        }
+        tl
           .fromTo(
             "[data-hero-line]",
             { autoAlpha: 0, yPercent: 35 },

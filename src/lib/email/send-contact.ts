@@ -19,9 +19,13 @@ export function getEmailConfig(env: Record<string, string | undefined> = process
 
 function formatText(data: ContactData): string {
   const service = services.find((s) => s.slug === data.service)?.title;
+  const replyBy =
+    data.contactMethod === "whatsapp"
+      ? `Reply on WhatsApp: ${data.whatsapp}${data.whatsapp.startsWith("+") ? ` (https://wa.me/${data.whatsapp.slice(1)})` : ""}`
+      : `Reply by email: ${data.email}`;
   return [
     `Name: ${data.name}`,
-    `Email: ${data.email}`,
+    replyBy,
     data.company ? `Business: ${data.company}` : null,
     service ? `Interested in: ${service}` : null,
     "",
@@ -50,8 +54,9 @@ export async function sendContactEmail(
       body: JSON.stringify({
         from: config.from,
         to: [config.to],
-        reply_to: data.email,
-        subject: `Website enquiry from ${data.name}`,
+        // Only set a reply address when the visitor asked to be answered by email.
+        ...(data.contactMethod === "email" ? { reply_to: data.email } : {}),
+        subject: `Website enquiry from ${data.name}${data.contactMethod === "whatsapp" ? " (reply on WhatsApp)" : ""}`,
         text: formatText(data),
       }),
       signal: AbortSignal.timeout(10_000),
