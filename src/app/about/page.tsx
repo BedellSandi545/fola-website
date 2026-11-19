@@ -5,7 +5,7 @@ import { Parallax } from "@/components/motion/parallax";
 import { PageIntro } from "@/components/ui/page-intro";
 import { RevealWords } from "@/components/ui/reveal-words";
 import { SectionLabel } from "@/components/ui/section-label";
-import { brandsServedFirstYearWords, founded, founder, mission, roadmap, values, vision } from "@/content/agency";
+import { founded, founder, mission, roadmap, values, vision } from "@/content/agency";
 import { photos } from "@/content/images";
 
 export const metadata: Metadata = {
@@ -52,7 +52,7 @@ export default function AboutPage() {
             </h2>
             <div data-animate="stagger" className="mt-6 space-y-4 text-fg-muted">
               <p>
-                FCA was established in {founded}. In our first year we served {brandsServedFirstYearWords} brands across
+                FCA was established in {founded}. In our first year we worked with brands across
                 hospitality, retail, NGOs, beauty, energy and technology, building a portfolio and a working understanding
                 of what businesses in the Liberian market need.
               </p>

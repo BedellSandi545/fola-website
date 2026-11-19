@@ -93,7 +93,8 @@ Everything below is on the site now, transcribed or inferred, and must be confir
 
 ### Claims and names
 - [ ] Permission to display all eight client names, and their spelling (e.g. "Afridodge", "EZone", "Nice Cream Ice Cream").
-- [ ] "Ten brands in the first year" and the six sectors.
+- [x] Brand count: removed at the client's request (2026-11-19); the site now says FCA works with brands across the six sectors.
+- [ ] The six sectors.
 - [ ] Publishing the owner's name on `/about`.
 - [ ] Service list and the web summaries of each service area.
 - [ ] Vision and mission wording (lightly edited for grammar from the plan).

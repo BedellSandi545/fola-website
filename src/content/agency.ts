@@ -57,5 +57,3 @@ export const sectors = ["Hospitality", "Retail", "NGOs", "Beauty", "Energy", "Te
 export const founder = { name: "Precious Folasade Odiaji", role: "Founder and CEO" } as const;
 export const founded = "September 2025";
 
-/** P: "FCA has served ten (10) brands" in its first year. Client names are intentionally not shown (client request, 2026-11-18). */
-export const brandsServedFirstYearWords = "ten";

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
-import { brandsServedFirstYearWords, sectors } from "@/content/agency";
+import { sectors } from "@/content/agency";
 import { photos } from "@/content/images";
 import { Parallax } from "@/components/motion/parallax";
 import { ButtonLink } from "@/components/ui/button-link";
@@ -24,8 +24,7 @@ export function Positioning({ index }: { index: number }) {
             <RevealWords text="More than just marketing." />
           </h2>
           <p data-animate="rise" className="type-lede mt-6 max-w-md" style={{ "--d": "150ms" } as CSSProperties}>
-            We help brands grow, connect and win. In our first year we worked with {brandsServedFirstYearWords} brands
-            across {listFormatter.format(sectors.map((s) => (s === "NGOs" ? s : s.toLowerCase())))}.
+            We help brands grow, connect and win. We work with brands across {listFormatter.format(sectors.map((s) => (s === "NGOs" ? s : s.toLowerCase())))}.
           </p>
           <ButtonLink
             href="/about"
