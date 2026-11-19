@@ -15,16 +15,13 @@ export function Hero() {
     <section aria-labelledby="hero-title" className="relative overflow-hidden">
       <HeroMotion className="wrap grid gap-y-10 pt-10 pb-16 sm:pt-14 lg:min-h-[min(calc(100svh-4.5rem-1px),60rem)] lg:grid-cols-12 lg:items-center lg:py-20">
         <div className="@container relative z-10 lg:col-span-7 lg:pr-12 xl:col-span-6 xl:pr-0">
-          <h1 id="hero-title" className="type-display text-[min(17cqi,6rem)] sm:text-[min(12.4cqi,8rem)]">
-            <span data-hero-line data-reveal className="block">
-              Seen.
-            </span>
-            <span data-hero-line data-reveal className="block">
-              Heard.
-            </span>
-            <span data-hero-line data-reveal className="block sm:whitespace-nowrap">
-              In demand.
-            </span>
+          {/* Sized so the longest line ("businesses") always fits its column. */}
+          <h1 id="hero-title" className="type-display text-[min(11.2cqi,6.5rem)]">
+            {["Helping", "businesses", "reach their", "horizon."].map((line) => (
+              <span key={line} data-hero-line data-reveal className="block whitespace-nowrap">
+                {line}
+              </span>
+            ))}
           </h1>
           <p data-hero-fade data-reveal className="type-lede mt-8 max-w-[34rem] lg:mt-10">
             Fola Creative Agency is a Liberian marketing and creative agency. We help businesses grow, connect and win

@@ -3,14 +3,6 @@
  * Descriptions marked "FCA wording" paraphrase the source for the web.
  */
 
-/** B: "Why work with FCA?" pillars. */
-export const pillars = [
-  { title: "Strategy", body: "Strategy-led creativity. Every idea starts with your goals." },
-  { title: "The team", body: "A team that gets involved, from planning to execution." },
-  { title: "Creative work", body: "Creative work with purpose. Content and campaigns built to connect." },
-  { title: "Partner in your growth", body: "Focused on visibility, engagement and results." },
-] as const;
-
 /** P: "Understand > Strategize > Create > Execute > Measure > Improve". Descriptions: FCA wording drawn from P. */
 export const approach = [
   { title: "Understand", body: "We learn your business, your audience and what you want to achieve before anything else." },
