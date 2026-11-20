@@ -3,7 +3,6 @@ import { Marquee } from "@/components/sections/marquee";
 import { Positioning } from "@/components/sections/home/positioning";
 import { ServicesIndex } from "@/components/sections/home/services-index";
 import { FieldWork } from "@/components/sections/home/field-work";
-import { Approach } from "@/components/sections/approach";
 import { Team } from "@/components/sections/home/team";
 import { ContactCta } from "@/components/sections/contact-cta";
 import { SectionRail, type RailSection } from "@/components/motion/section-rail";
@@ -14,7 +13,6 @@ const sections: readonly RailSection[] = [
   { id: "about", label: "About us" },
   { id: "services", label: "Services" },
   { id: "work", label: "Work" },
-  { id: "approach", label: "Process" },
   { id: "team", label: "Team" },
   { id: "contact", label: "Contact" },
 ];
@@ -49,9 +47,8 @@ export default function HomePage() {
       <Positioning index={1} />
       <ServicesIndex index={2} />
       <FieldWork index={3} />
-      <Approach index={4} />
-      <Team index={5} />
-      <ContactCta index={6} />
+      <Team index={4} />
+      <ContactCta index={5} />
     </>
   );
 }

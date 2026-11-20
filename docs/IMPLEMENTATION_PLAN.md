@@ -76,7 +76,7 @@ HERO (desktop)
 MOBILE: photo first (4:5) with line, then type.
 ```
 
-Home order (updated 2026-11-18 to follow the nav): hero → scroll-linked marquee → 01 About us (pillars) → 02 Services → 03 Work (navy band) → 04 Process → 05 Team → 06 Contact → footer with the FCA signature. The brands list was removed at the client's request.
+Home order (updated 2026-11-20): hero → scroll-linked marquee → 01 About us → 02 Services → 03 Work (navy band) → 04 Team → 05 Contact → footer with the FCA signature. Removed at the client's request: brands list (2026-11-18), the four pillars (2026-11-19), the Process section (2026-11-20, also removed from /services). Services photo breaks: branding (left), content (right), events (left, the beach event photo, added 2026-11-20), each with its caption set large on the opposite side.
 
 ### Motion system (`src/lib/motion.ts`)
 - Durations: 0.2s for UI feedback, 0.6s for reveals, 1.2s for the hero line draw. Ease: `power3.out` on entry, `power2.in` on exit.

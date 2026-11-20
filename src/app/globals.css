@@ -392,15 +392,6 @@
   }
 }
 
-/* Approach: a step lights up once the reader reaches it. */
-[data-step] [data-step-number] {
-  transition:
-    color 0.5s ease,
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-[data-step].is-in [data-step-number] {
-  color: var(--accent-ink);
-}
 
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Approach } from "@/components/sections/approach";
 import { ContactCta } from "@/components/sections/contact-cta";
-import { CaptionedPhoto } from "@/components/ui/captioned-photo";
+import Image from "next/image";
+import { Parallax } from "@/components/motion/parallax";
 import { PageIntro } from "@/components/ui/page-intro";
 import { RevealWords } from "@/components/ui/reveal-words";
 import { photos } from "@/content/images";
@@ -15,10 +15,48 @@ export const metadata: Metadata = {
   alternates: { canonical: "/services" },
 };
 
-/** Photographs placed between service areas, keyed by the service they follow. */
-const interludes: Partial<Record<string, { photo: (typeof photos)[keyof typeof photos]; caption: string }>> = {
-  branding: { photo: photos.workingSession, caption: "Planning session with the team." },
-  content: { photo: photos.cameraBts, caption: "Behind the camera on a portrait shoot." },
+type Interlude = {
+  photo: (typeof photos)[keyof typeof photos];
+  caption: string;
+  /** Which side the photograph sits on (desktop); interludes alternate down the page. The caption takes the other side. */
+  side: "left" | "right";
+  /** Photograph width in the 12-column grid. */
+  span: "lg:col-span-7" | "lg:col-span-5";
+  aspect: string;
+  objectPosition: string;
+  sizes: string;
+};
+
+/** Photographs placed inside a service area, below its list, keyed by service. */
+const interludes: Partial<Record<string, Interlude>> = {
+  branding: {
+    photo: photos.workingSession,
+    caption: "Planning session with the team.",
+    side: "left",
+    span: "lg:col-span-7",
+    aspect: "aspect-[16/10]",
+    objectPosition: "50% 60%",
+    sizes: "(min-width: 1024px) 56vw, 100vw",
+  },
+  content: {
+    photo: photos.cameraBts,
+    caption: "Behind the camera on a portrait shoot.",
+    side: "right",
+    span: "lg:col-span-5",
+    aspect: "aspect-[4/5]",
+    objectPosition: "50% 50%",
+    sizes: "(min-width: 1024px) 40vw, 100vw",
+  },
+  // Brochure caption. Added at the client's request (2026-11-20).
+  events: {
+    photo: photos.beachEvent,
+    caption: "Event planning and coordination: behind the scenes of a summer beach event.",
+    side: "left",
+    span: "lg:col-span-5",
+    aspect: "aspect-[4/5]",
+    objectPosition: "60% 50%",
+    sizes: "(min-width: 1024px) 40vw, 100vw",
+  },
 };
 
 export default function ServicesPage() {
@@ -92,24 +130,51 @@ export default function ServicesPage() {
                 </ul>
               </section>
               {interlude ? (
-                <div className="wrap grid border-b border-line py-16 lg:grid-cols-12">
-                  <CaptionedPhoto
-                    className={service.slug === "branding" ? "lg:col-span-7" : "lg:col-span-5 lg:col-start-8"}
-                    photo={interlude.photo}
-                    caption={interlude.caption}
-                    parallax
-                    aspect={service.slug === "branding" ? "aspect-[16/10]" : "aspect-[4/5]"}
-                    objectPosition={service.slug === "branding" ? "50% 60%" : "50% 50%"}
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                  />
-                </div>
+                <figure className="wrap grid items-end gap-8 border-b border-line py-16 lg:grid-cols-12 lg:gap-16 lg:py-20">
+                  <div
+                    data-animate="mask"
+                    className={cn(
+                      "group relative overflow-hidden bg-surface-sunken",
+                      interlude.aspect,
+                      interlude.span,
+                      interlude.side === "right" && "lg:order-2 lg:col-start-8",
+                    )}
+                  >
+                    <div className="absolute inset-0 transition-transform duration-700 ease-out-expo group-hover:scale-[1.03]">
+                      <Parallax amount={7}>
+                        <Image
+                          src={interlude.photo.src}
+                          alt={interlude.photo.alt}
+                          fill
+                          quality={70}
+                          placeholder="blur"
+                          sizes={interlude.sizes}
+                          className="object-cover"
+                          style={{ objectPosition: interlude.objectPosition }}
+                        />
+                      </Parallax>
+                    </div>
+                  </div>
+                  {/* The caption answers the photograph from the other side of the grid. */}
+                  <figcaption
+                    data-animate="rise"
+                    className={cn(
+                      "lg:col-span-5 lg:pb-4",
+                      interlude.side === "right" ? "lg:order-1 lg:col-start-1" : "lg:col-start-8",
+                    )}
+                  >
+                    <span aria-hidden="true" className="mb-5 block h-[3px] w-12 bg-accent" />
+                    <p className="text-[clamp(1.35rem,2.2vw,2rem)] leading-snug font-bold [font-stretch:112%]">
+                      {interlude.caption}
+                    </p>
+                  </figcaption>
+                </figure>
               ) : null}
             </div>
           );
         })}
       </div>
 
-      <Approach />
       <ContactCta />
     </>
   );

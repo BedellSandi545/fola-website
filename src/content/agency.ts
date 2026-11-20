@@ -3,16 +3,6 @@
  * Descriptions marked "FCA wording" paraphrase the source for the web.
  */
 
-/** P: "Understand > Strategize > Create > Execute > Measure > Improve". Descriptions: FCA wording drawn from P. */
-export const approach = [
-  { title: "Understand", body: "We learn your business, your audience and what you want to achieve before anything else." },
-  { title: "Strategize", body: "We shape a practical, sustainable plan around those goals." },
-  { title: "Create", body: "We produce the content, visuals and stories the plan calls for." },
-  { title: "Execute", body: "We put the work into the world, on the right platforms at the right moments." },
-  { title: "Measure", body: "We look at how the work is performing against the goals we set together." },
-  { title: "Improve", body: "We refine what comes next based on what we learn." },
-] as const;
-
 /** P: core values, lightly edited for grammar. */
 export const values = [
   { title: "Creativity", body: "We approach challenges with fresh ideas, creative thinking and compelling storytelling." },
