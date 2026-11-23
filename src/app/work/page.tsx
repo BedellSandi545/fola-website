@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 import { ContactCta } from "@/components/sections/contact-cta";
 import { CaptionedPhoto } from "@/components/ui/captioned-photo";
 import { PageIntro } from "@/components/ui/page-intro";
@@ -8,12 +11,12 @@ import { photos } from "@/content/images";
 import { fieldNotes } from "@/content/work";
 import { cn } from "@/lib/cn";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Work",
   description:
     "Moments from Fola Creative Agency's work in the field: videography, client consultations, on-site discussions, event coordination and portrait photography.",
-  alternates: { canonical: "/work" },
-};
+  path: "/work",
+});
 
 const crops: Record<string, string> = {
   videography: "50% 0%",
@@ -25,6 +28,7 @@ const crops: Record<string, string> = {
 export default function WorkPage() {
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Work", path: "/work" }])} />
       <PageIntro
         eyebrow="Work"
         title="Work"

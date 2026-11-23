@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { RevealObserver } from "@/components/motion/reveal-observer";
 import { site } from "@/config/site";
+import { openGraphBase } from "@/lib/seo";
 import { themeInitScript } from "@/lib/theme";
 import "./globals.css";
 
@@ -15,6 +16,12 @@ const archivo = Archivo({
   display: "swap",
 });
 
+const verification: Metadata["verification"] = {
+  // Search-engine ownership tokens (HTML-tag method). Optional: DNS verification works too.
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : {}),
+  ...(process.env.BING_SITE_VERIFICATION ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } } : {}),
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
@@ -23,15 +30,25 @@ export const metadata: Metadata = {
   },
   description: site.description,
   applicationName: site.name,
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  publisher: site.name,
+  category: "Marketing",
   alternates: { canonical: "/" },
   openGraph: {
-    type: "website",
-    siteName: site.name,
-    locale: site.locale,
-    title: site.name,
+    ...openGraphBase,
+    url: "/",
+    title: `${site.name}: marketing, branding and content in Liberia`,
     description: site.description,
   },
   twitter: { card: "summary_large_image" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
+  verification,
+  formatDetection: { telephone: false, email: false, address: false },
 };
 
 export const viewport: Viewport = {

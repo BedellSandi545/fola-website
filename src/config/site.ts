@@ -3,11 +3,29 @@
  * business plan, or supplied directly by the client. Items marked NEEDS CLIENT
  * CONFIRMATION in docs/CONTENT_AND_FUNCTIONALITY.md must be verified before launch.
  */
+/** The domain the client configured for production (2026-11-23). */
+export const PRODUCTION_URL = "https://folacreativeagency.com";
+
+/** Normalises an origin: falls back to production, drops trailing slashes and any path. */
+export function resolveSiteUrl(value: string | undefined): string {
+  const raw = value?.trim();
+  if (!raw) return PRODUCTION_URL;
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return PRODUCTION_URL;
+  }
+}
+
 export const site = {
   name: "Fola Creative Agency",
   shortName: "FCA",
-  /** Production URL. Set NEXT_PUBLIC_SITE_URL in the deployment environment. */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  /**
+   * Canonical origin (apex domain, https, no trailing slash). Used for canonical
+   * URLs, the sitemap, robots, Open Graph and structured data. NEXT_PUBLIC_SITE_URL
+   * can override it (for example on a staging host); production needs nothing set.
+   */
+  url: resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL),
   description:
     "Fola Creative Agency (FCA) is a Liberian-owned marketing and creative agency. We help businesses become seen, heard and in demand through strategy, branding, content production and campaigns.",
   tagline: "We create, you grow.",
@@ -46,9 +64,8 @@ export const contact = {
   ] as const satisfies readonly PhoneNumber[],
   /**
    * WhatsApp and TikTok (@folacreativeagency) were supplied by the client on
-   * 2026-11-18. The brochure prints Facebook and Instagram account names only:
-   * the Instagram URL assumes the same handle as TikTok, and Facebook links to a
-   * search for the printed name. NEEDS CLIENT CONFIRMATION (exact profile URLs).
+   * 2026-11-18; the Instagram and Facebook profile URLs on 2026-11-23. All four
+   * are confirmed. (The brochure printed the Facebook account as "Folasade Odiaji".)
    */
   social: [
     { network: "whatsapp", label: "WhatsApp", handle: whatsapp.display, url: whatsappHref(whatsapp.greeting) },
@@ -56,14 +73,14 @@ export const contact = {
     {
       network: "instagram",
       label: "Instagram",
-      handle: "Fola Creative Agency",
+      handle: "@folacreativeagency",
       url: "https://www.instagram.com/folacreativeagency/",
     },
     {
       network: "facebook",
       label: "Facebook",
-      handle: "Folasade Odiaji",
-      url: "https://www.facebook.com/search/top?q=Folasade%20Odiaji",
+      handle: "@folacreativeagency",
+      url: "https://www.facebook.com/folacreativeagency/",
     },
   ] as const satisfies readonly SocialProfile[],
   serviceArea: "Liberia",

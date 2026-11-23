@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 import Image from "next/image";
 import { ContactCta } from "@/components/sections/contact-cta";
 import { Parallax } from "@/components/motion/parallax";
@@ -8,16 +11,17 @@ import { SectionLabel } from "@/components/ui/section-label";
 import { founded, founder, mission, roadmap, values, vision } from "@/content/agency";
 import { photos } from "@/content/images";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About us",
   description:
     "Fola Creative Agency is a Liberian-owned marketing and consultancy company established in September 2025. Our vision, mission, values and plans.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd([{ name: "About us", path: "/about" }])} />
       <PageIntro
         eyebrow="About us"
         title="About FCA"

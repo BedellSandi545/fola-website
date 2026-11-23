@@ -135,7 +135,7 @@ function track(page) {
   const socials = await page.locator("aside a[target=_blank]").evaluateAll((els) => els.map((a) => a.getAttribute("href")));
   check(
     "social: WhatsApp, TikTok, Instagram and Facebook are links",
-    ["wa.me/231880007811", "tiktok.com/@folacreativeagency", "instagram.com", "facebook.com"].every((u) => socials.some((h) => h?.includes(u))),
+    ["wa.me/231880007811", "tiktok.com/@folacreativeagency", "instagram.com/folacreativeagency", "facebook.com/folacreativeagency"].every((u) => socials.some((h) => h?.includes(u))),
     socials.join(" "),
   );
   await context.close();

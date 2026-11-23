@@ -1,13 +1,22 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/config/site";
+import { absoluteUrl } from "@/lib/seo";
 
-// The privacy notice is excluded while it is a draft (it is also marked noindex).
-const routes = ["", "/work", "/services", "/about", "/contact"] as const;
+/**
+ * Indexable routes. The privacy notice is excluded while it is a draft (it is
+ * also marked noindex). Add new public routes here.
+ */
+const sitemapRoutes = [
+  { path: "/", priority: 1 },
+  { path: "/services", priority: 0.9 },
+  { path: "/work", priority: 0.8 },
+  { path: "/about", priority: 0.8 },
+  { path: "/contact", priority: 0.7 },
+] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return routes.map((route) => ({
-    url: `${site.url}${route}`,
+  return sitemapRoutes.map(({ path, priority }) => ({
+    url: absoluteUrl(path),
     changeFrequency: "monthly",
-    priority: route === "" ? 1 : 0.8,
+    priority,
   }));
 }

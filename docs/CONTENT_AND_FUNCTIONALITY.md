@@ -86,7 +86,7 @@ Everything below is on the site now, transcribed or inferred, and must be confir
 ### Contact details
 - [ ] Phone numbers `0880 007 811` and `0776 167 578`. The `tel:` links use an inferred **+231** country code.
 - [ ] Email `folacreative@gmail.com`: correct and monitored? (the brochure prints `Folacreative@gmail.com`).
-- [ ] Facebook ("Folasade Odiaji") and Instagram ("Fola Creative Agency") **profile URLs**. They are shown as plain text until URLs are supplied (set `url` in `src/config/site.ts`).
+- [x] Instagram and Facebook profile URLs confirmed by the client (2026-11-23): `https://www.instagram.com/folacreativeagency/` and `https://www.facebook.com/folacreativeagency/`. Both are shown as `@folacreativeagency`.
 - [ ] WhatsApp: not added. Confirm the number and whether a WhatsApp button is wanted.
 - [ ] Business address (only "Liberia" is shown).
 - [ ] Production domain (`NEXT_PUBLIC_SITE_URL`).

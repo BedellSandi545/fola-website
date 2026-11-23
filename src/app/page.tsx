@@ -6,7 +6,8 @@ import { FieldWork } from "@/components/sections/home/field-work";
 import { Team } from "@/components/sections/home/team";
 import { ContactCta } from "@/components/sections/contact-cta";
 import { SectionRail, type RailSection } from "@/components/motion/section-rail";
-import { contact, site } from "@/config/site";
+import { JsonLd } from "@/components/seo/json-ld";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 
 /** Chapters of the home page, in the same order as the main navigation. */
 const sections: readonly RailSection[] = [
@@ -18,29 +19,9 @@ const sections: readonly RailSection[] = [
 ];
 
 export default function HomePage() {
-  // Organization facts are taken from the client's own documents. Social profiles
-  // (sameAs) are limited to the ones the client supplied directly.
-  const organization = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: site.name,
-    alternateName: site.shortName,
-    url: site.url,
-    logo: `${site.url}/brand/fca-logo-navy.png`,
-    email: contact.email,
-    foundingDate: "2025-09",
-    areaServed: contact.serviceArea,
-    description: site.description,
-    sameAs: contact.social.filter((s) => s.network === "tiktok").map((s) => s.url),
-  };
-
   return (
     <>
-      <script
-        type="application/ld+json"
-        // Static, server-generated JSON; "<" is escaped so it cannot close the tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization).replace(/</g, "\\u003c") }}
-      />
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       <SectionRail sections={sections} />
       <Hero />
       <Marquee />

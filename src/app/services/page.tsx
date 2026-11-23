@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd, servicesJsonLd } from "@/lib/structured-data";
 import { ContactCta } from "@/components/sections/contact-cta";
 import Image from "next/image";
 import { Parallax } from "@/components/motion/parallax";
@@ -8,12 +11,12 @@ import { photos } from "@/content/images";
 import { services } from "@/content/services";
 import { cn } from "@/lib/cn";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Services",
   description:
     "Marketing and digital marketing, branding, content production, events and promotions, training and business consultancy from Fola Creative Agency.",
-  alternates: { canonical: "/services" },
-};
+  path: "/services",
+});
 
 type Interlude = {
   photo: (typeof photos)[keyof typeof photos];
@@ -62,6 +65,7 @@ const interludes: Partial<Record<string, Interlude>> = {
 export default function ServicesPage() {
   return (
     <>
+      <JsonLd data={[breadcrumbJsonLd([{ name: "Services", path: "/services" }]), servicesJsonLd()]} />
       <PageIntro
         eyebrow="Services"
         title="Services"

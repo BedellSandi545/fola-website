@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { contact, site } from "@/config/site";
 
 /**
@@ -6,12 +7,13 @@ import { contact, site } from "@/config/site";
  * (and ideally a legal adviser) before launch; it is kept out of search results
  * until then. See docs/CONTENT_AND_FUNCTIONALITY.md.
  */
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy notice",
-  description: `How ${site.name} handles information sent through this website.`,
-  alternates: { canonical: "/privacy" },
-  robots: { index: false, follow: true },
-};
+  description:
+    `How ${site.name} handles information sent through this website.`,
+  path: "/privacy",
+  noindex: true,
+});
 
 export default function PrivacyPage() {
   return (
