@@ -6,7 +6,7 @@ import { services } from "@/content/services";
 
 describe("resolveSiteUrl", () => {
   it("defaults to the production domain", () => {
-    expect(resolveSiteUrl(undefined)).toBe("https://folacreativeagency.com");
+    expect(resolveSiteUrl(undefined)).toBe("https://www.folacreativeagency.com");
     expect(resolveSiteUrl("  ")).toBe(PRODUCTION_URL);
   });
   it("normalises to a bare origin", () => {

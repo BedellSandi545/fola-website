@@ -8,18 +8,6 @@ const nextConfig: NextConfig = {
     qualities: [70, 80],
     formats: ["image/avif", "image/webp"],
   },
-  // One canonical host: www.folacreativeagency.com permanently redirects to the apex
-  // domain, keeping the path and query, so search engines index a single copy.
-  async redirects() {
-    return [
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.folacreativeagency.com" }],
-        destination: "https://folacreativeagency.com/:path*",
-        permanent: true,
-      },
-    ];
-  },
   turbopack: {
     rules: {
       "*.css": {

@@ -3,8 +3,13 @@
  * business plan, or supplied directly by the client. Items marked NEEDS CLIENT
  * CONFIRMATION in docs/CONTENT_AND_FUNCTIONALITY.md must be verified before launch.
  */
-/** The domain the client configured for production (2026-11-23). */
-export const PRODUCTION_URL = "https://folacreativeagency.com";
+/**
+ * Canonical production origin. Vercel's domain settings make www the primary
+ * domain and redirect the apex to it (2026-11-24), so canonical URLs use www.
+ * The redirect lives in Vercel only: an app-level redirect the other way caused
+ * an infinite loop. If the primary domain changes in Vercel, change this too.
+ */
+export const PRODUCTION_URL = "https://www.folacreativeagency.com";
 
 /** Normalises an origin: falls back to production, drops trailing slashes and any path. */
 export function resolveSiteUrl(value: string | undefined): string {
